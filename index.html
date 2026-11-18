@@ -3,7 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#050505">
+<meta name="theme-color" content="#050505" id="theme-color-meta">
+<script>
+  (() => {
+    try {
+      const savedTheme = localStorage.getItem("arth-theme");
+      document.documentElement.dataset.theme = savedTheme === "light" ? "light" : "dark";
+    } catch (_) {
+      document.documentElement.dataset.theme = "dark";
+    }
+  })();
+</script>
 <title>ARTH.EXE | Portfolio</title>
 
 <style>
@@ -15,6 +25,22 @@
   --muted:#777;
   --line:#222;
   --soft:#101010;
+  --nav-fg:#f5f5f5;
+  --project-hover-bg:#f5f5f5;
+  --project-hover-fg:#050505;
+  color-scheme:dark;
+}
+
+html[data-theme="light"]{
+  --bg:#f4f4f1;
+  --fg:#111111;
+  --muted:#666660;
+  --line:#d8d8d1;
+  --soft:#e9e9e3;
+  --nav-fg:#111111;
+  --project-hover-bg:#111111;
+  --project-hover-fg:#f4f4f1;
+  color-scheme:light;
 }
 
 *{margin:0;padding:0;box-sizing:border-box}
@@ -25,9 +51,11 @@ body{
   font-family:Inter,Arial,sans-serif;
   overflow-x:hidden;
   cursor:none;
+  transition:background-color .35s ease,color .35s ease;
 }
 a{color:inherit;text-decoration:none}
 button{font:inherit}
+
 
 /* LOADER */
 
@@ -116,7 +144,7 @@ nav{
   justify-content:space-between;
   align-items:center;
   z-index:500;
-  mix-blend-mode:difference;
+  color:var(--nav-fg);
 }
 
 .logo{
@@ -344,7 +372,7 @@ section{
   content:"";
   position:absolute;
   inset:0;
-  background:#fff;
+  background:var(--project-hover-bg);
   transform:scaleY(0);
   transform-origin:bottom;
   transition:transform .5s cubic-bezier(.16,1,.3,1);
@@ -352,7 +380,7 @@ section{
 }
 
 .project:hover{
-  color:#050505;
+  color:var(--project-hover-fg);
   padding:0 30px;
 }
 .project:hover::before{transform:scaleY(1)}
@@ -487,6 +515,126 @@ footer{
   font:9px "Space Mono",monospace;
 }
 
+
+/* THEME SWITCH */
+
+.theme-toggle{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  border:0;
+  padding:7px 0 7px 12px;
+  color:var(--nav-fg);
+  background:transparent;
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+
+.theme-toggle-track{
+  position:relative;
+  width:54px;
+  height:29px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 7px;
+  border:1px solid currentColor;
+  border-radius:999px;
+  overflow:hidden;
+  transition:background-color .35s ease,border-color .35s ease;
+}
+
+.theme-toggle-icon{
+  position:relative;
+  z-index:1;
+  width:14px;
+  font:18px/1 Georgia,serif;
+  text-align:center;
+  transition:transform .5s cubic-bezier(.2,.8,.2,1),opacity .3s ease;
+}
+
+.theme-icon-moon{opacity:1;transform:rotate(0deg)}
+.theme-icon-sun{opacity:.45;transform:rotate(-35deg)}
+
+.theme-toggle-thumb{
+  position:absolute;
+  top:3px;
+  left:3px;
+  width:21px;
+  height:21px;
+  border-radius:50%;
+  background:var(--nav-fg);
+  transition:transform .5s cubic-bezier(.2,.8,.2,1),background-color .35s ease;
+}
+
+.theme-toggle-label{
+  font:9px "Space Mono",monospace;
+  letter-spacing:.1em;
+  white-space:nowrap;
+}
+
+html[data-theme="light"] .theme-toggle-thumb{transform:translateX(25px)}
+html[data-theme="light"] .theme-icon-moon{opacity:.4;transform:rotate(35deg)}
+html[data-theme="light"] .theme-icon-sun{opacity:1;transform:rotate(0deg)}
+
+.theme-toggle:focus-visible{
+  outline:2px solid currentColor;
+  outline-offset:5px;
+  border-radius:4px;
+}
+
+/* LIGHT THEME DETAILS */
+
+html[data-theme="light"] .loader{background:#f4f4f1}
+html[data-theme="light"] .loader-row{color:#777}
+html[data-theme="light"] .loader-bar{background:#d8d8d1}
+html[data-theme="light"] .loader-fill{background:#111}
+html[data-theme="light"] .cursor{background:#111}
+html[data-theme="light"] .cursor-ring{border-color:#777}
+html[data-theme="light"] body.cursor-hover .cursor-ring{border-color:#111}
+html[data-theme="light"] .hero-label,
+html[data-theme="light"] .hero-description,
+html[data-theme="light"] .contact-small{color:#666660}
+html[data-theme="light"] .hero-bottom,
+html[data-theme="light"] .section-number,
+html[data-theme="light"] .about-data{color:#777}
+html[data-theme="light"] .scroll i{background:#777}
+html[data-theme="light"] .marquee-track span{color:#aaa}
+html[data-theme="light"] .about-big .muted{color:#a0a09a}
+html[data-theme="light"] .about-data div{border-color:#d8d8d1}
+html[data-theme="light"] .about-data strong{color:#111}
+html[data-theme="light"] .skill span:last-child,
+html[data-theme="light"] .project-number,
+html[data-theme="light"] .project-meta{color:#777}
+html[data-theme="light"] .preview{background:#e9e9e3;border-color:#ccc}
+html[data-theme="light"] .preview::before,
+html[data-theme="light"] .preview::after{color:#777}
+html[data-theme="light"] .contact-title a::after{background:#111}
+html[data-theme="light"] footer{color:#777}
+html[data-theme="light"] .grain{opacity:.018}
+
+/* Reveal the incoming theme from the toggle's position. */
+::view-transition-old(root),
+::view-transition-new(root){
+  animation:none;
+  mix-blend-mode:normal;
+}
+
+::view-transition-new(root){
+  clip-path:circle(0px at var(--theme-origin-x,100%) var(--theme-origin-y,0%));
+  animation:theme-reveal .85s cubic-bezier(.22,.75,.18,1) forwards;
+}
+
+@keyframes theme-reveal{
+  to{clip-path:circle(var(--theme-reveal-radius,150vmax) at var(--theme-origin-x,100%) var(--theme-origin-y,0%))}
+}
+
+@media(prefers-reduced-motion:reduce){
+  body{transition:none}
+  .theme-toggle-track,.theme-toggle-thumb,.theme-toggle-icon{transition:none}
+  ::view-transition-new(root){animation-duration:.01ms}
+}
+
 /* MOBILE */
 
 @media(max-width:700px){
@@ -500,6 +648,12 @@ footer{
   }
 
   .nav-links{display:none}
+
+  .theme-toggle{gap:7px;padding:6px 0 6px 8px}
+  .theme-toggle-label{font-size:8px}
+  .theme-toggle-track{width:50px;height:27px}
+  .theme-toggle-thumb{width:19px;height:19px}
+  html[data-theme="light"] .theme-toggle-thumb{transform:translateX(23px)}
 
   .hero{
     padding:130px 6vw 50px;
@@ -584,6 +738,16 @@ footer{
     <li><a href="#work">Work</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
+
+  <button class="theme-toggle" id="theme-toggle" type="button"
+          aria-label="Switch to light mode" aria-pressed="false">
+    <span class="theme-toggle-track">
+      <span class="theme-toggle-icon theme-icon-moon" aria-hidden="true">☾</span>
+      <span class="theme-toggle-icon theme-icon-sun" aria-hidden="true">☼</span>
+      <span class="theme-toggle-thumb" aria-hidden="true"></span>
+    </span>
+    <span class="theme-toggle-label">LIGHT MODE</span>
+  </button>
 </nav>
 
 <div class="preview"></div>
@@ -784,6 +948,58 @@ footer{
 </footer>
 
 <script>
+
+/* THEME SWITCH + ORIGIN-BASED REVEAL */
+
+const themeToggle = document.getElementById("theme-toggle");
+const themeMeta = document.getElementById("theme-color-meta");
+const root = document.documentElement;
+
+function setTheme(theme){
+  root.dataset.theme = theme;
+  const isLight = theme === "light";
+  themeToggle.setAttribute("aria-pressed", String(isLight));
+  themeToggle.setAttribute(
+    "aria-label",
+    isLight ? "Switch to dark mode" : "Switch to light mode"
+  );
+  themeToggle.querySelector(".theme-toggle-label").textContent =
+    isLight ? "DARK MODE" : "LIGHT MODE";
+  themeMeta.setAttribute("content", isLight ? "#f4f4f1" : "#050505");
+
+  try {
+    localStorage.setItem("arth-theme", theme);
+  } catch (_) {}
+}
+
+setTheme(root.dataset.theme === "light" ? "light" : "dark");
+
+themeToggle.addEventListener("click", () => {
+  const nextTheme = root.dataset.theme === "dark" ? "light" : "dark";
+  const rect = themeToggle.getBoundingClientRect();
+  const x = rect.left + rect.width / 2;
+  const y = rect.top + rect.height / 2;
+  const radius = Math.hypot(
+    Math.max(x, innerWidth - x),
+    Math.max(y, innerHeight - y)
+  ) + 24;
+
+  root.style.setProperty("--theme-origin-x", `${x}px`);
+  root.style.setProperty("--theme-origin-y", `${y}px`);
+  root.style.setProperty("--theme-reveal-radius", `${radius}px`);
+
+  if (document.startViewTransition &&
+      !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const transition = document.startViewTransition(() => setTheme(nextTheme));
+    transition.finished.finally(() => {
+      root.style.removeProperty("--theme-origin-x");
+      root.style.removeProperty("--theme-origin-y");
+      root.style.removeProperty("--theme-reveal-radius");
+    });
+  } else {
+    setTheme(nextTheme);
+  }
+});
 
 /* LOADER */
 
